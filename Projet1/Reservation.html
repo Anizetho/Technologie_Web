@@ -1,0 +1,37 @@
+<!-- Réservation.html --> 
+<!-- Author : Thomas Anizet --> 
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+        <title>Titre</title>
+	</head>
+
+	<body>
+		<h1>
+				RESERVATION </br>
+		</h1>
+
+		<p>
+			Le prix de la place est de 10 euros jusqu'a 12 ans
+			et ensuite de 15 euros.</br>
+			Le prix de l'assurance annulation est de 20 euros
+			quelque soit le nombre de voyageurs.</br>
+
+		</p>
+		
+		<form method="POST" action="DetailReservation.php">
+		<table>
+			<td> Destination </td>
+			<td> <input type='text' name='destination' /></td></tr>
+			<td> Nombre de places </td>
+			<td> <input type='number' min='0' name='nb_travelers'/> </td></tr>
+			<td> Assurance annulation </td>
+			<td align='center'> <input type='checkbox' name='insurance'/> </td></tr>
+			<td align='center'> <input type='submit' value='Etape suivante' name='submit'> </td>
+			<td align='center'> <input type='submit' value="Annuler la réservation" name='submit'> </td></tr>			
+		</table>
+		</form>
+	</body>
+</html>
