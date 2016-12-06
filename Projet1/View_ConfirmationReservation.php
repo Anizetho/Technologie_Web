@@ -14,10 +14,8 @@
 				CONFIRMATION DES RESERVATIONS </br>
 		</h1>
 		
-		<p>
-			Votre demande a bien été enregistrée. </br>
-			Merci de bien verser la somme de 45 euros sur le compte 000-000000-00 </br>
-		</p>
+		<p> Votre demande a bien été enregistrée. </p>
+		<p>	Merci de bien verser la somme de <?php echo "<strong>" . $_SESSION['TotalPrice'] . "</strong>"; ?> euros sur le compte 000-000000-00</p>
 		
 		<form method='post' action="Controller.php?page=View_Reservation">
 			<td> <input type='submit' value="Retour à la page d'acceuil"> </td></tr>

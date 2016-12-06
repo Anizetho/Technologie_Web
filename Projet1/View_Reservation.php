@@ -1,22 +1,6 @@
 <!-- View_Reservation.html --> 
 <!-- Author : Thomas Anizet --> 
 
-<?php
-	//variable declaration
-	$dest = '';
-	$pax = 0;
-	$insurance = false;
-	$check = false; 		
-	
-	if(isset($reservationExistence)) 
-	{	
-		//loads values from reservation if it exists
-		$destination= $reservationExistence->getDestination();
-		$pers = $reservationExistence->get_nb_traveler();
-		$insurance = $reservationExistence->getInsurance();
-	}
-?>
-
 <!DOCTYPE html>
 <html>
 	<head>

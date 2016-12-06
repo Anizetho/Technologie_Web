@@ -11,83 +11,44 @@
 
 	<body>
 		<?php
-		include('Detail.class.php');
-			class information
+		//include('Detail.class.php');
+			
+		class SaveAge
 			{
 				// attributs --> ATTENTION private
-				private $destination;
-				private $nb_traveler;
-				private $insurance;
-				public $name;
-				public $age;
-				public $listTravelers;
+				private $AgeInf;
+				private $AgeSupp;
 				
 				// Création constructeur 
-				public function __construct($dest, $nb_traveler, $insurance) 
+				public function __construct($AgeInférieur, $AgeSuppérieur) 
 				{ 
-				   $this->destination = $dest;  
-				   $this->nb_traveler = $nb_traveler;
-				   $this->insurance = $insurance;
-				   $this->listTravelers = array();
+				   $this->AgeInf = $AgeInférieur;
+				   $this->AgeSupp = $AgeSuppérieur;
 				}
 				
-				public function save()
-				{
-					$_SESSION['Reservation_model']=serialize($this);
-				}
 				// Création des différentes méthodes 
-				public function getDestination()  
+				public function GetAgeInf()  
 				{  
+					
 					// "$this" permet d'accéder aux attributs de la classe
-				   return $this->destination ;  
-				} 
-			
-				public function get_nb_traveler()  
-				{  
-				   return $this->nb_traveler;  
-				}
-				
-				public function getInsurance()
-				{
-					return $this->insurance;
-				}
-				// La fonction setTravler ajoute le nom et l'age d'un voyageur dans un tableau.
-				public function setTraveler($name, $age)
-				{
-					// On appelle la classe Traveler pour créer un objet passenger
-					$this->name=$name;
-					$this->age=$age;
-					// On ajoute name et age à la liste des voyageurs
-					$listTravelers=array($name, $age);
-					print_r ($listTravelers);
+				   return $this->AgeInf ;  
 				}
 
-				public function getList()
-				{
-					return $this->listTravelers;
+				public function GetAgeSupp()  
+				{  
+					
+					// "$this" permet d'accéder aux attributs de la classe
+				   return $this->AgeSupp ;  
 				}
 			
-				/*public function addTraveler($name, $age)
-				{
-					// On appelle la classe Traveler pour créer un objet passenger
-					$passenger  = new Traveler($name, $age);
-					// On ajoute à liste Traveler (ou tableau pour être correcte) l'objet créé.
-					$listTravelers[] = $passenger;
-					return $this->$listTravelers;
-				}
-				
-				public function getList()
-				{
-					return $this->listTravelers;
-				}*/
+
 
 			}
-			
-				
-				echo "les classe";
+	
+				echo "les classes (ici?)";
 				echo "<br>";		
 				
-				// Création d'un objet avec "new"
+				/*// Création d'un objet avec "new"
 				$test = new information("Belgium", 3, TRUE);
 				// "->" permet d'accéder aux attributs et méthodes de l'objet créé.
 				// Exemple pour accéder aux méthodes
@@ -96,27 +57,21 @@
 				echo $test->get_nb_traveler(); // Rep : 3
 				echo "<br>";
 				echo $test->getInsurance(); // Rep : 1 -> TRUE renvoie 1 MAIS FALSE ne renvoie RIEN (pas 0)
-				echo "<br>";
-				echo $test->setTraveler("Anizet Thomas", 20);
+				echo "<br>";*/
+				$test = new SaveAge(423998798789879879842, 0);
+
+				echo $test->GetAgeInf() . "</br>";
+				echo $test->GetAgeSupp(). "</br>";
+
+				/*echo $test->setTraveler("Anizet Thomas", 20);
 				echo "<br>";		
 				echo $test->getList();
 				echo "<br>";		
 				echo $test->setTraveler("Dale", 21);
 				echo "<br>";		
-				echo $test->getList();
+				echo $test->getList();*/
 
-				$test->addTraveler("Anizet", 20);
-				print_r($listTravelers);
-				echo $passenger;
-				echo $passenger->GetName();
-				echo $passenger->GetAge();
-				//echo "<br>";
-				//echo $test->addTraveler("Anizet", 20);
-				//echo "<br>";
-				//echo $Traveler->get_name();
-				//echo "<br>";
-				//echo $test->getList();
-				//echo "<br>";
+
 				
 				// Remarque : 	- regarder comment on ajoute des éléments à un tableau
 				//				- regarder la vidéo sur le POO
