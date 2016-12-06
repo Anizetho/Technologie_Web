@@ -1,12 +1,14 @@
+<!-- Controller.php --> 
+<!-- Author : Thomas Anizet --> 
+
 <?php
 	session_start();
 	include('Reservation.class.php');
 	include('Detail.class.php');
 	include('Confirmation.class.php');
 
-	// En 1er lieu, on va lancer la page(la vue) de réservation : il s'agit d'un formulaire à remplir 
-	
-	// Premièrement, on connecte notre base de données (bdd)
+//**************************************************** Pour connecter la bdd ****************************************************
+//******************************************************(utilisation de PDO)*****************************************************
 	try
         {
             $bdd = new PDO('mysql:host=localhost;dbname=Reservation;charset=utf8', 'root', 'root');
@@ -17,7 +19,10 @@
         }
 
 
-	// Quand on appuye sur "Etape suivante" depuis la page réservation (pour aller vers détail)
+//**************************************************** Pour "avancer" ****************************************************
+//********************************************("Etape suivante", "Confirmer")*********************************************
+
+	// ************ Quand on appuye sur "Etape suivante" DEPUIS la page réservation (pour aller vers détail) *************
 	if (isset($_POST["nextReservation"]))
 	{
 		$_SESSION['destination'] = $_POST['destination'];
@@ -36,23 +41,18 @@
 		// On rassemble ces infos dans les classes
 		$InfoVoyage = new InfoReservation($_SESSION['destination'], $_SESSION['nb_traveler'], $_SESSION['insurance']);
 
-		// On enregistre ces infos dans la bdd (base de donnée)
-		$reqInfoVoyage = $bdd->prepare('INSERT INTO Info_Voyage(destination, assurance, nombre_voyageurs) VALUES(:destination, :assurance, :nombre_voyageurs)');
-		$reqInfoVoyage->execute(array(
-			'destination' => $InfoVoyage->GetDestination(),
-		    'assurance' => $InfoVoyage->GetInsurance(),
-		    'nombre_voyageurs' => $InfoVoyage->GetNb_traveler()
-	    ));
+		
 	}
 	
 	// On rassemble ces infos dans les classes
 	$InfoVoyage = new InfoReservation($_SESSION['destination'], $_SESSION['nb_traveler'], $_SESSION['insurance']);
 
-	
 
 
 
-	// Quand on appuye sur "Etape suivante" depuis la page détail (pour aller vers validation)
+
+
+	// ************* Quand on appuye sur "Etape suivante" DEPUIS la page détail (pour aller vers validation) *************
 	if (isset($_POST["nextDetails"]))
 	{
 		// On enregistre le nom et l'age dans la bdd
@@ -68,23 +68,20 @@
 			//print_r($ListNom[$i]) ;
 		}
 
-		// On rassemble ces infos dans les classes
+		// On rassemble ces infos (nom et age) avec les classes
 		$AgeInf = 0;
 		$AgeSupp = 0;
 		for($i=0; $i<$InfoVoyage->GetNb_traveler(); $i++)
 		{
 			$p=$i+1;
-			$ListNom = $_POST['nom'];
-			$ListAge = $_POST['age'];
 
-			$_SESSION['nom'.$i] = $ListNom[$i];
-			$_SESSION['age'.$i] = $ListAge[$i];
+			$_SESSION['nom'.$i] = $_POST['nom'][$i];
+			$_SESSION['age'.$i] = $_POST['age'][$i];
 			
 			// Pour teste l'utilité de ce for 
-			//echo $p . ") " . $_SESSION['nom'.$i] . "</br>";
-			//echo $p . ") " . $_SESSION['age'.$i] . "</br>";
+			//echo $p . ") " . $_SESSION['nom'.$i] . "</br>"; // Affiche par ex. : 1) Anizet
+			//echo $p . ") " . $_SESSION['age'.$i] . "</br>"; // Affiche par ex. : 1) 20
 
-			// On rassemble le nom et l'age dans une classe 
 			// Remarque : cette info porte le n° du passager (on commence à 1, pas 0)
 		    $InfoVoyageur[$p] = new Traveler($_SESSION['nom'.$i], $_SESSION['age'.$i]);
 
@@ -96,26 +93,37 @@
 			{
 				$AgeSupp+=1;
 			}
-			
-
 		}
+
+		// On crée des variables de SESSION pour plus facilement transmettre plus facilement les informations
 		$_SESSION['AgeInf']=$AgeInf;
 		$_SESSION['AgeSupp']=$AgeSupp;
 		$SauvegardeAges = new SaveAge($_SESSION['AgeInf'], $_SESSION['AgeSupp']);
-		
-		//echo "testons si globale : " . $InfoVoyageur[1]->GetAge() . "</br>";
-		//echo "En-dessous de 12 ans : " . $AgeInf . "</br>";
-		//echo "Au-dessus de 12 ans : " . $AgeSupp . "</br>";
-
 	}
+
+	// Test -> Test ok 
+	echo "tester si nom et age sont bien des variables de session : </br>";
+	//echo "1) " . $_SESSION['nom0'] . "</br>"; // Affiche : 1) ...nom...
+	//echo "1) " . $_SESSION['age0'] . "</br>"; // Affiche : 1) ...nom...
+	//echo "1) " . $InfoVoyageur[2]->GetName() . "</br>"; // Affiche : 1) ...nom...
+	//echo "1) " . $InfoVoyageur[2]->GetAge() . "</br>"; // Affiche : 1) ...nom...
 
 	//On sauvegarde les ages
 	$SauvegardeAges = new SaveAge($_SESSION['AgeInf'], $_SESSION['AgeSupp']);
 
 
-	// Quand on appuye sur "Confirmer" depuis la page Validation (pour aller vers confirmation)
+
+
+
+
+	// ************* Quand on appuye sur "Confirmer" DEPUIS la page Validation (pour aller vers confirmation) *************
 	if (isset($_POST["nextValidation"]))
 	{
+		//echo "1) " . $InfoVoyageur[2]->GetName() . "</br>"; // Affiche : 1) ...nom...
+		//echo "1) " . $InfoVoyageur[2]->GetAge() . "</br>"; // Affiche : 1) ...nom...
+		// On va calculer le prix total du voyage
+		// 1) On regarde si l'assurance est cochée
+		// prix assurance = 20€
 		if ($InfoVoyage->GetInsurance() == "OUI")
 		{
 			$priceAssurance = 20;
@@ -124,15 +132,50 @@
 		{
 			$priceAssurance = 0;
 		}
+		// 2) On regarde quel age ont les voyageurs et en fonction, on calcule les prix
+		//  <12ans => 10€   MAIS    >12ans => 15€
 		$AgeInfGet = $SauvegardeAges->GetAgeInf();
 		$AgeSuppGet = $SauvegardeAges->GetAgeSupp();
-		
 		$priceInf = $AgeInfGet *10;
 		$priceSupp = $AgeSuppGet*15;
 
-		// En conclusion : 
+		// 3) Au final, le prix total vaut : 
 		$price = $priceInf+$priceSupp+$priceAssurance;
+		// On en crée une variable de SESSION
 		$_SESSION['TotalPrice']=$price;
+
+
+
+		// On enregistre ces infos dans la bdd (base de donnée) dès qu'on a appuyé sur le bouton "Confirmer"
+		$reqInfoVoyage = $bdd->prepare('INSERT INTO Info_Voyage(destination, assurance, nombre_voyageurs) VALUES(:destination, :assurance, :nombre_voyageurs)');
+		$reqInfoVoyage->execute(array(
+			'destination' => $InfoVoyage->GetDestination(),
+		    'assurance' => $InfoVoyage->GetInsurance(),
+		    'nombre_voyageurs' => $InfoVoyage->GetNb_traveler()
+	    ));
+	    session_destroy();
+	}
+
+
+
+
+//**************************************************** Pour les retour en arrière ****************************************************
+//**********************("Retour à la page précédente", "Annuler la réservation", "Retour à la page d'acceuil")***********************
+
+	// 1) Si on se trouve sur la page détail et qu'on veut revenir au formulaire de départ
+	if (isset($_POST["backDetails"]))
+	{
+	}
+
+	// 2) Si on se trouve sur la page Validation et qu'on veut revenir à la page précédente (détail)
+	if (isset($_POST["backValidation"]))
+	{
+	}
+
+	// 3) Si on se trouve sur une des pages (n'importe laquelle) et on souhaite annuler la réservation
+	if (isset($_POST["cancel"]))
+	{
+		//session_destroy();
 	}
 
 	// Autre cas : si on appuye sur "annuler réservation"	
@@ -179,15 +222,22 @@
 			
 		case 'cancel':
 			session_destroy();
-			include('Controller.php');
+			include('View_Reservation.php');
 			break;
 	}
 			
 ?>
 
-<!-- To Do : 
+<!-- 
+1) To Do : 
 - Quand on rafraîchit une page, cela enregistre des données dans la bdd -> Y remédier !
 - pas oublier le required pour les entrées!
+- lier (join) les 2 tables
+- pas oublie la protection avec htmlspecialchars
+-protection pour entrer des nombres entiers
 - 
-- 
+
+2) Demander au prof :
+- Possibilité de revenir en arrière et que la case soit coché ou non selon ce qu'on avait fait avant ?
+- Problème : faut appuyer 2 fois pour destroyer la session
 -->

@@ -23,15 +23,15 @@
 							$p = $i+1;
 							echo "Passager n°" . $p . " : ";
 						?>	
-							<p> Nom : <input type='text' name='nom[]'/></p>
-							<p> Age : <input type='text' name='age[]'/></p>
+							<p> Nom : <input type='text' name='nom[]' value='<?php if(isset($InfoVoyageur[$p])){echo $InfoVoyageur[1]->GetName();}?>'/></p>
+							<p> Age : <input type='text' name='age[]' value='<?php if(isset($InfoVoyageur[$p] )){echo $InfoVoyageur[$p]->GetAge();}?>'/></p>
 						<?php
 						}
 					?>			
 				</div>
 				<input type='submit' value='Etape suivante' name='nextDetails' />
 			</form></td>
-			
+
 
 			<td><form method='post' action='Controller.php?page=reservation' \>
 				<input type='submit' value='Retour à la page précédente' name='backDetails' />

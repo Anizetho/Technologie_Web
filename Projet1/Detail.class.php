@@ -1,5 +1,6 @@
 <!-- Detail.class.php --> 
 <!-- Author : Thomas Anizet --> 
+
 <?php
 	class Traveler
 	{

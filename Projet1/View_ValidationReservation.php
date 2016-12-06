@@ -40,11 +40,11 @@
 		<form method='post' action="Controller.php?page=confirmation">
 			<td> <input type='submit' value='Confirmer' name='nextValidation'> </td>
 		</form>
-		<form method='post' action="Controller.php?page=View_Reservation">
-			<td> <input type='submit' value='Retour à la page précédente'> </td>
+		<form method='post' action="Controller.php?page=details">
+			<td> <input type='submit' value='Retour à la page précédente' name='backValidation'> </td>
 		</form>
 		<form method='post' action='Controller.php?page=cancel'>
-			<td align='center'> <input type='submit' value='Annuler la réservation'></td></tr>
+			<td align='center'> <input type='submit' value='Annuler la réservation' name='cancel'></td></tr>
 		</form>	
 		</tr></table>
 	</body>

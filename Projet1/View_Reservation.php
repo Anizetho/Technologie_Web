@@ -1,4 +1,4 @@
-<!-- View_Reservation.html --> 
+<!-- View_Reservation.php --> 
 <!-- Author : Thomas Anizet --> 
 
 <!DOCTYPE html>
@@ -21,10 +21,10 @@
 		<table>
 			<form action="Controller.php?page=details" method="post">
 				<tr><td> Destination : </td>
-				<td><input type='text' name='destination' placeholder='Exemple : Brésil,...' value='' required /></td></tr>
+				<td><input type='text' name='destination' placeholder='Exemple : Brésil,...' value='<?php if(isset($InfoVoyage)){echo $InfoVoyage->GetDestination();}?>' required /></td></tr>
 				
 				<tr><td> Nombre de places : </td>
-				<td><input type='number' min='0' name='nb_traveler' value='' required /></td></tr>
+				<td><input type='number' min='0' name='nb_traveler' value='<?php if(isset($InfoVoyage)){echo $InfoVoyage->GetNb_traveler();}?>' required /></td></tr>
 				
 				<tr><td> Assurance annulation : </td>
 				<td><input type='checkbox' name='insurance'/></td></tr>

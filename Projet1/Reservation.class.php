@@ -1,5 +1,6 @@
 <!-- Reservation.class.php --> 
 <!-- Author : Thomas Anizet --> 
+
 <?php
 			class InfoReservation
 			{
