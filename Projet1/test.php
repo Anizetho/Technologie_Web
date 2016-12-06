@@ -11,12 +11,15 @@
 
 	<body>
 		<?php
+		include('Detail.class.php');
 			class information
 			{
 				// attributs --> ATTENTION private
 				private $destination;
 				private $nb_traveler;
 				private $insurance;
+				public $name;
+				public $age;
 				public $listTravelers;
 				
 				// Création constructeur 
@@ -48,19 +51,35 @@
 				{
 					return $this->insurance;
 				}
-
-				public function addTraveler($name, $age)
+				// La fonction setTravler ajoute le nom et l'age d'un voyageur dans un tableau.
+				public function setTraveler($name, $age)
 				{
 					// On appelle la classe Traveler pour créer un objet passenger
-					$passenger  = new Traveler($name, $age);
-					// On ajoute à liste Traveler (ou tableau pour être correcte) l'objet créé.
-					$listTravelers[] = passenger;
+					$this->name=$name;
+					$this->age=$age;
+					// On ajoute name et age à la liste des voyageurs
+					$listTravelers=array($name, $age);
+					print_r ($listTravelers);
 				}
 
 				public function getList()
 				{
 					return $this->listTravelers;
 				}
+			
+				/*public function addTraveler($name, $age)
+				{
+					// On appelle la classe Traveler pour créer un objet passenger
+					$passenger  = new Traveler($name, $age);
+					// On ajoute à liste Traveler (ou tableau pour être correcte) l'objet créé.
+					$listTravelers[] = $passenger;
+					return $this->$listTravelers;
+				}
+				
+				public function getList()
+				{
+					return $this->listTravelers;
+				}*/
 
 			}
 			
@@ -78,8 +97,19 @@
 				echo "<br>";
 				echo $test->getInsurance(); // Rep : 1 -> TRUE renvoie 1 MAIS FALSE ne renvoie RIEN (pas 0)
 				echo "<br>";
-				$test->addTraveler("Anizet", 20);
+				echo $test->setTraveler("Anizet Thomas", 20);
+				echo "<br>";		
 				echo $test->getList();
+				echo "<br>";		
+				echo $test->setTraveler("Dale", 21);
+				echo "<br>";		
+				echo $test->getList();
+
+				$test->addTraveler("Anizet", 20);
+				print_r($listTravelers);
+				echo $passenger;
+				echo $passenger->GetName();
+				echo $passenger->GetAge();
 				//echo "<br>";
 				//echo $test->addTraveler("Anizet", 20);
 				//echo "<br>";

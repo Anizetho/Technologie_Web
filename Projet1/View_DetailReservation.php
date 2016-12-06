@@ -13,27 +13,26 @@
 		<h1>
 				DETAIL DES RESERVATIONS </br>
 		</h1>
-		<div class="news">
-		<?php
-			for($i = 0; $i < $Info->GetNb_traveler() ; $i++)
-			{	
-				$p = $i+1;
-				$name = $_SESSION["BackName"][$i];
-				$age = $_SESSION["BackAge"][$i];
-				
-				echo "Passager n°" . $p . " : " . "</br><table>
-				<tr><td> Nom : </td>
-				<td><input type='text' name='name[" . $i . "]'/></td></tr>
-				<tr><td> Age : </td>
-				<td><input type='text' name='age[" . $i . "]'/></td></tr></table>";
-			}
-		?>
-		</div>
-		<table>
-			<tr>
-			<td><form method='post' action='Controller.php?page=validation'>
+
+		<table><tr><td>
+			<form method='post' action='Controller.php?page=validation'>
+				<div class="news">
+					<?php
+						for ($i=0; $i < $InfoVoyage->GetNb_traveler(); $i++)
+						{
+							$p = $i+1;
+							echo "Passager n°" . $p . " : ";
+						?>	
+							<p> Nom : <input type='text' name='nom[]'/></p>
+							<p> Age : <input type='text' name='age[]'/></p>
+						<?php
+						}
+					?>			
+				</div>
 				<input type='submit' value='Etape suivante' name='nextDetails' />
 			</form></td>
+			
+
 			<td><form method='post' action='Controller.php?page=reservation' \>
 				<input type='submit' value='Retour à la page précédente' name='backDetails' />
 			</form></td>
