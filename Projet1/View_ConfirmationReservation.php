@@ -6,7 +6,7 @@
 	<head>
 		<meta charset="utf-8" />
         <title>Confirmation</title>
-        <link rel="stylesheet" href="Style.css" />
+        <link rel="stylesheet" href="StyleNew.css" />
 	</head>
 
 	<body>

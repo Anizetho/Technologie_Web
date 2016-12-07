@@ -6,7 +6,7 @@
 	<head>
 		<meta charset="utf-8" />
         <title>Validation</title>
-        <link rel="stylesheet" href="Style.css" />
+        <link rel="stylesheet" href="StyleNew.css" />
 	</head>
 
 	<body>
@@ -44,7 +44,7 @@
 			<td> <input type='submit' value='Retour à la page précédente' name='backValidation'> </td>
 		</form>
 		<form method='post' action='Controller.php?page=cancel'>
-			<td align='center'> <input type='submit' value='Annuler la réservation' name='cancel'></td></tr>
+			<td align='center'> <input type='submit' value='Annuler la réservation' name='backcancel'></td></tr>
 		</form>	
 		</tr></table>
 	</body>

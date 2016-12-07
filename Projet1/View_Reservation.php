@@ -6,7 +6,7 @@
 	<head>
 		<meta charset="utf-8" />
         <title>Reservation</title>
-        <link rel="stylesheet" href="Style.css" />
+        <link rel="stylesheet" href="StyleNew.css" />
 	</head>
 
 	<body>
@@ -14,8 +14,8 @@
 				RESERVATION </br>
 		</h1>
 
-		<p>Le prix de la place est de 10 euros jusqu'a 12 anset ensuite de 15 euros.</p>
-		<p>	Le prix de l'assurance annulation est de 20 euros quelque soit le nombre de voyageurs.</p>
+		<h5>Le prix de la place est de 10 euros jusqu'à 12 ans et ensuite de 15 euros.</br></br>
+		Le prix de l'assurance annulation est de 20 euros quelque soit le nombre de voyageurs.</h5>
 
 		<div class="news">
 		<table>
@@ -24,7 +24,7 @@
 				<td><input type='text' name='destination' placeholder='Exemple : Brésil,...' value='<?php if(isset($InfoVoyage)){echo $InfoVoyage->GetDestination();}?>' required /></td></tr>
 				
 				<tr><td> Nombre de places : </td>
-				<td><input type='number' min='0' name='nb_traveler' value='<?php if(isset($InfoVoyage)){echo $InfoVoyage->GetNb_traveler();}?>' required /></td></tr>
+				<td><input type='number' min='1' name='nb_traveler' value='<?php if(isset($InfoVoyage)){echo $InfoVoyage->GetNb_traveler();}?>' required /></td></tr>
 				
 				<tr><td> Assurance annulation : </td>
 				<td><input type='checkbox' name='insurance'/></td></tr>

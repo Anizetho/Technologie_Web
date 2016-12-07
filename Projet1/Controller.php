@@ -25,8 +25,9 @@
 	// ************ Quand on appuye sur "Etape suivante" DEPUIS la page réservation (pour aller vers détail) *************
 	if (isset($_POST["nextReservation"]))
 	{
-		$_SESSION['destination'] = $_POST['destination'];
-	    $_SESSION['nb_traveler'] = $_POST['nb_traveler'];
+		// htmlspecialchars pour protéger contre la faille XSS
+		$_SESSION['destination'] = htmlspecialchars($_POST['destination']);
+	    $_SESSION['nb_traveler'] = htmlspecialchars($_POST['nb_traveler']);
 	    // Si on a coché la case assurance
 	    if(isset($_POST['insurance']))
 			{
@@ -58,8 +59,8 @@
 		// On enregistre le nom et l'age dans la bdd
 		for($i=0; $i<$InfoVoyage->GetNb_traveler(); $i++)
 		{
-			$ListNom = $_POST['nom'];
-			$ListAge = $_POST['age'];
+			$ListNom = htmlspecialchars($_POST['nom']);
+			$ListAge = htmlspecialchars($_POST['age']);
 		    $reqInfoVoyageur = $bdd->prepare('INSERT INTO Info_Voyageur(nom, age) VALUES(:nom, :age)');
 			$reqInfoVoyageur->execute(array(
 				'nom' => $ListNom[$i],
@@ -75,8 +76,8 @@
 		{
 			$p=$i+1;
 
-			$_SESSION['nom'.$i] = $_POST['nom'][$i];
-			$_SESSION['age'.$i] = $_POST['age'][$i];
+			$_SESSION['nom'.$i] = htmlspecialchars($_POST['nom'][$i]);
+			$_SESSION['age'.$i] = htmlspecialchars($_POST['age'][$i]);
 			
 			// Pour teste l'utilité de ce for 
 			//echo $p . ") " . $_SESSION['nom'.$i] . "</br>"; // Affiche par ex. : 1) Anizet
@@ -119,8 +120,6 @@
 	// ************* Quand on appuye sur "Confirmer" DEPUIS la page Validation (pour aller vers confirmation) *************
 	if (isset($_POST["nextValidation"]))
 	{
-		//echo "1) " . $InfoVoyageur[2]->GetName() . "</br>"; // Affiche : 1) ...nom...
-		//echo "1) " . $InfoVoyageur[2]->GetAge() . "</br>"; // Affiche : 1) ...nom...
 		// On va calculer le prix total du voyage
 		// 1) On regarde si l'assurance est cochée
 		// prix assurance = 20€
@@ -173,9 +172,9 @@
 	}
 
 	// 3) Si on se trouve sur une des pages (n'importe laquelle) et on souhaite annuler la réservation
-	if (isset($_POST["cancel"]))
+	if (isset($_POST["backcancel"]))
 	{
-		//session_destroy();
+		echo "<h6>ATTENTION : En annulant votre réservation, vous allez perdre toutes les données déjà entrées précédemment ! Êtes-vous certain d'annuler ? </br>-> Si oui, cliquez sur <em>'Annuler la réservation'</em>.</br> -> Sinon, cliquez sur <em>'Etape suivante'</em>.<h6>";
 	}
 
 	// Autre cas : si on appuye sur "annuler réservation"	
@@ -222,6 +221,11 @@
 			
 		case 'cancel':
 			session_destroy();
+			if (isset($_POST['cancel']))
+				{
+					session_destroy();
+					echo "<h6><em><font color='red'> Réservation annulée !</font></em></br> Si vous souhaitez encoder une nouvelle réservation, n'hésitez pas.</h6>";
+				}
 			include('View_Reservation.php');
 			break;
 	}
@@ -230,12 +234,11 @@
 
 <!-- 
 1) To Do : 
-- Quand on rafraîchit une page, cela enregistre des données dans la bdd -> Y remédier !
-- pas oublier le required pour les entrées!
+- Quand on rafraîchit une page, cela enregistre des données dans la bdd -> Y remédier ! -> Ok pour InfoVoyage / pas Ok pour InfoVoyageur
 - lier (join) les 2 tables
-- pas oublie la protection avec htmlspecialchars
--protection pour entrer des nombres entiers
-- 
+- pas oublier la protection avec htmlspecialchars -> Ok
+- protection pour entrer des nombres entiers -> Ok
+- problème d'affichage (présence ligne discontinue) quand on souhaite annuler une réservation
 
 2) Demander au prof :
 - Possibilité de revenir en arrière et que la case soit coché ou non selon ce qu'on avait fait avant ?
