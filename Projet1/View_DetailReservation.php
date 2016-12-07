@@ -1,6 +1,8 @@
 <!-- View_DetailReservation.php --> 
 <!-- Author : Thomas Anizet --> 
-
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -25,10 +27,11 @@
 							$p = $i+1;
 							echo "Passager n°" . $p . " : ";
 						?>	
-							<p> Nom : <input type='text' name='nom[]' value='<?php if(isset($InfoVoyageur[$p])){echo $InfoVoyageur[1]->GetName();}?>' required /></p>
+							<p> Nom : <input type='text' name='nom[]' value='<?php if(isset($InfoVoyageur[$p])){echo $InfoVoyageur[$p]->GetName();}?>' required /></p>
 							<p> Age : <input type='number' min='1' name='age[]' value='<?php if(isset($InfoVoyageur[$p] )){echo $InfoVoyageur[$p]->GetAge();}?>' required /></p>
 						<?php
 						}
+
 					?>			
 			</td></tr>
 		</table>

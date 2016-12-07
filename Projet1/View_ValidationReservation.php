@@ -1,6 +1,8 @@
 <!-- View_ValidationReservation.php --> 
 <!-- Author : Thomas Anizet --> 
-
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html>
 	<head>
