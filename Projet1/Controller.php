@@ -238,7 +238,7 @@
 - lier (join) les 2 tables
 - pas oublier la protection avec htmlspecialchars -> Ok
 - protection pour entrer des nombres entiers -> Ok
-- problème d'affichage (présence ligne discontinue) quand on souhaite annuler une réservation
+- problème d'affichage (présence ligne discontinue) quand on souhaite annuler une réservation (page View_Reservation.php)
 
 2) Demander au prof :
 - Possibilité de revenir en arrière et que la case soit coché ou non selon ce qu'on avait fait avant ?

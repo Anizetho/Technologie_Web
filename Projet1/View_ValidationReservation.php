@@ -13,6 +13,7 @@
 		<h1>
 				VALIDATION DES RESERVATIONS </br>
 		</h1>
+		
 		<div class="news">
 			<?php
 			echo "<table>
