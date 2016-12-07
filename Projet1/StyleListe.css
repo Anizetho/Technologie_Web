@@ -1,0 +1,35 @@
+/*<!-- View_Reservation.php --> 
+<!-- Author : Thomas Anizet --> */
+body
+{
+    background-color: silver; /* Le fond de la page sera noir */
+    color: black; /* Le texte de la page sera blanc */
+}
+
+form
+{
+    margin-left:20px;
+}
+table
+{
+    border-style:double;
+    border-color:grey;
+    margin-left:20px;
+}
+
+td, th
+{
+    border: 1px solid black;
+}
+
+a
+{
+    text-decoration: underline;
+    color: blue;
+}
+
+/* 
+h1 -> Aligner le texte sur le centre de la ligne
+h3 -> Aligner le texte sur le centre de la ligne + faire en sorte que le texte soit écrit en blanc sur font noir
+.news -> 
+a -> Utiliser pour afficher les "liens" (pour afficher les commentaires ou pour revenir en arrière) en bleu
