@@ -14,7 +14,7 @@ catch(Exception $e)
 	// C) 
 // 2) Retirer le nombre de voyageur à cet ID ($IDNEW = $ID-InfoVoyage->GetNb_Traveler();)
 // 3) Selectionner les infos à partir de ce nouvel ID ($IDNEW) et jusqu'au dernier ID ajouté ($ID) (SELECT `nom`, `age` FROM `Info_Voyageur` LIMIT $IDNEW, $ID)
-echo "Coucou (ici ?)";
+echo "Sur bonne page ?";
 
 $reponse = $bdd->query("SELECT ID, max(ID) as maximum FROM Info_Voyageur");
 while($donnees = $reponse->fetch())
