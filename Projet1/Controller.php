@@ -41,8 +41,6 @@
 		
 		// On rassemble ces infos dans les classes
 		$InfoVoyage = new InfoReservation($_SESSION['destination'], $_SESSION['nb_traveler'], $_SESSION['insurance']);
-
-		
 	}
 	
 	// On rassemble ces infos (destination, nombre de voyageurs, assurance) avec les classes
@@ -56,14 +54,6 @@
 	// ************* Quand on appuye sur "Etape suivante" DEPUIS la page détail (pour aller vers validation) *************
 	if (isset($_POST["nextDetails"]))
 	{
-		$_SESSION['nom0'] = htmlspecialchars($_POST['nom'][0]);
-		$_SESSION['age0'] = htmlspecialchars($_POST['age'][0]);
-		$_SESSION['nom1'] = htmlspecialchars($_POST['nom'][1]);
-		$_SESSION['age1'] = htmlspecialchars($_POST['age'][1]);
-		$InfoVoyageur[1] = new Traveler($_SESSION['nom0'], $_SESSION['age0']);
-		$InfoVoyageur[2] = new Traveler($_SESSION['nom1'], $_SESSION['age1']);
-
-
 		// On rassemble ces infos (nom et age) avec les classes
 		$AgeInf = 0;
 		$AgeSupp = 0;
@@ -91,13 +81,13 @@
 			}
 		}
 
-		// On crée des variables de SESSION pour plus facilement transmettre plus facilement les informations
+		// On crée des variables de SESSION pour transmettre plus facilement les informations
 		$_SESSION['AgeInf']=$AgeInf;
 		$_SESSION['AgeSupp']=$AgeSupp;
 		$SauvegardeAges = new SaveAge($_SESSION['AgeInf'], $_SESSION['AgeSupp']);
 	}
 
-	// On rassemble ces infos (nom, age) avec les classes
+	// On rassemble les infos (nom, age) avec les classes
 	for($i=0; $i<$InfoVoyage->GetNb_traveler(); $i++)
 		{
 			$p=$i+1;
@@ -105,8 +95,7 @@
 		    $InfoVoyageur[$p] = new Traveler($_SESSION['nom'.$i], $_SESSION['age'.$i]);
 		}
 
-
-	//On sauvegarde les ages
+	//On rassemble les infos (AgeInf, AgeSupp) avec les classes
 	$SauvegardeAges = new SaveAge($_SESSION['AgeInf'], $_SESSION['AgeSupp']);
 
 
@@ -117,7 +106,7 @@
 	// ************* Quand on appuye sur "Confirmer" DEPUIS la page Validation (pour aller vers confirmation) *************
 	if (isset($_POST["nextValidation"]))
 	{
-		// On va calculer le prix total du voyage
+		// On va calculer le prix total du voyage :
 		// 1) On regarde si l'assurance est cochée
 		// prix assurance = 20€
 		if ($InfoVoyage->GetInsurance() == "OUI")
@@ -141,8 +130,9 @@
 		$_SESSION['TotalPrice']=$price;
 
 
+		// *********** ENREGISTREMENT DES INFOS DANS LA BASE DE DONNEE ***********
 
-		// On enregistre la destination, le nombre de voyageurs et l'assurance annulation dans la table 'Info_voyage' de la bdd (base de donnée) dès qu'on a appuyé sur le bouton "Confirmer"
+		// 1) On enregistre la destination, le nombre de voyageurs et l'assurance annulation dans la table 'Info_voyage' de la bdd (base de donnée) et ce, dès qu'on a appuyé sur le bouton "Confirmer"
 		$reqInfoVoyage = $bdd->prepare('INSERT INTO Info_Voyage(destination, assurance, nombre_voyageurs) VALUES(:destination, :assurance, :nombre_voyageurs)');
 		$reqInfoVoyage->execute(array(
 			'destination' => $InfoVoyage->GetDestination(),
@@ -150,15 +140,20 @@
 		    'nombre_voyageurs' => $InfoVoyage->GetNb_traveler()
 	    ));
 
-		// On enregistre le nom et l'age dans la table 'Info_voyageur' de la bdd (base de donnée) dès qu'on a appuyé sur le bouton "Confirmer"
+		// 2) On enregistre le nom et l'age dans la table 'Info_voyageur' de la bdd et ce, dès qu'on a appuyé sur le bouton "Confirmer"
 		for($i=0; $i<$InfoVoyage->GetNb_traveler(); $i++)
 		{
+			$p=$i+1;
+			$InfoVoyageur[$p] = new Traveler($_SESSION['nom'.$i], $_SESSION['age'.$i]);
+			//$_SESSION['nom'.$i] = htmlspecialchars($_POST['nom'][$i]);
+			//$_SESSION['age'.$i] = htmlspecialchars($_POST['age'][$i]);
+
 			$ListNom = htmlspecialchars($_POST['nom']);
 			$ListAge = htmlspecialchars($_POST['age']);
 		    $reqInfoVoyageur = $bdd->prepare('INSERT INTO Info_Voyageur(nom, age) VALUES(:nom, :age)');
 			$reqInfoVoyageur->execute(array(
-				'nom' => $ListNom[$i],
-				'age' => $ListAge[$i]
+				'nom' => $InfoVoyageur[$p]->GetName(),
+				'age' => $InfoVoyageur[$p]->GetAge()
 			    ));
 			//print_r($ListNom[$i]) ;
 		}
@@ -184,7 +179,6 @@
 	// 2) Si on se trouve sur la page Validation et qu'on veut revenir à la page précédente (détail)
 	if (isset($_POST["backValidation"]))
 	{
-
 	}
 
 	// 3) Si on se trouve sur une des pages (n'importe laquelle) et on souhaite annuler la réservation
@@ -225,12 +219,10 @@
 
 		case 'details':
 			include ('View_DetailReservation.php');
-			//session_start();
 			break;
 		
 		case 'validation':
 			include ('View_ValidationReservation.php');
-			//session_start();
 			break;
 		
 		case 'confirmation':
@@ -258,6 +250,7 @@
 - protection pour entrer des nombres entiers -> Ok
 - problème d'affichage (présence ligne discontinue) quand on souhaite annuler une réservation (page View_Reservation.php)
 - Donner un max pour les champs d'entrée de type number
+- Pour les prix, vérifier avec l'age limite (12 ans) 
 
 2) Demander au prof :
 - Possibilité de revenir en arrière et que la case soit coché ou non selon ce qu'on avait fait avant ?
