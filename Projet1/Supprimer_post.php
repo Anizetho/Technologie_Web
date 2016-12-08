@@ -16,12 +16,11 @@ catch(Exception $e)
         die('Erreur : '.$e->getMessage());
     }
 
-$SuppVoyage = $bdd->prepare('DELETE FROM `Info_Voyage` WHERE ID=:IDVoyage ');
+
+$SuppVoyage = $bdd->prepare('DELETE FROM `Info_Voyage` WHERE ID=:IDVoyage');
 $SuppVoyage->execute(array(
     'IDVoyage' => $_SESSION['IDVoyage']
-
     ));
-
 
 $SuppVoyage = $bdd->prepare('DELETE FROM `Info_Voyageur` WHERE ID=:IDVoyageur');
 $SuppVoyage->execute(array(
@@ -29,10 +28,7 @@ $SuppVoyage->execute(array(
     ));
 
 // Puis rediriger vers la list des réservations comme ceci :
-if (isset($_SESSION['IDVoyageur']))
-{
-	header('Location: Controller.php?page=liste');
-}
+header('Location: Controller.php?page=liste');
 
 ?>
 

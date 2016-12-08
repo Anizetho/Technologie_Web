@@ -157,7 +157,7 @@
 				'age' => $InfoVoyageur[$p]->GetAge()
 			    ));
 		}
-	    //session_destroy(); // pas oublier !!!
+	    session_destroy(); // pas oublier !!!
 	}
 
 
