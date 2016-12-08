@@ -11,7 +11,7 @@
 //******************************************************(utilisation de PDO)*****************************************************
 	try
         {
-            $bdd = new PDO('mysql:host=localhost;dbname=Reservation;charset=utf8', 'root', 'root');
+            $bdd = new PDO('mysql:host=localhost;dbname=Reservation;charset=utf8', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
         }
     catch(Exception $e)
         {
@@ -133,11 +133,12 @@
 		// *********** ENREGISTREMENT DES INFOS DANS LA BASE DE DONNEE ***********
 
 		// 1) On enregistre la destination, le nombre de voyageurs et l'assurance annulation dans la table 'Info_voyage' de la bdd (base de donnée) et ce, dès qu'on a appuyé sur le bouton "Confirmer"
-		$reqInfoVoyage = $bdd->prepare('INSERT INTO Info_Voyage(destination, assurance, nombre_voyageurs) VALUES(:destination, :assurance, :nombre_voyageurs)');
+		$reqInfoVoyage = $bdd->prepare('INSERT INTO Info_Voyage(destination, assurance, nombre_voyageurs, prix) VALUES(:destination, :assurance, :nombre_voyageurs, :prix)');
 		$reqInfoVoyage->execute(array(
 			'destination' => $InfoVoyage->GetDestination(),
 		    'assurance' => $InfoVoyage->GetInsurance(),
-		    'nombre_voyageurs' => $InfoVoyage->GetNb_traveler()
+		    'nombre_voyageurs' => $InfoVoyage->GetNb_traveler(),
+		    'prix' => $_SESSION['TotalPrice']
 	    ));
 
 		// 2) On enregistre le nom et l'age dans la table 'Info_voyageur' de la bdd et ce, dès qu'on a appuyé sur le bouton "Confirmer"
@@ -155,10 +156,46 @@
 				'nom' => $InfoVoyageur[$p]->GetName(),
 				'age' => $InfoVoyageur[$p]->GetAge()
 			    ));
-			//print_r($ListNom[$i]) ;
 		}
-	    session_destroy();
+	    //session_destroy(); // pas oublier !!!
 	}
+
+
+
+
+
+
+	// ************* Quand on appuye sur "Voir la liste des réservations" DEPUIS la page Confirmation (pour aller vers liste) *************
+	if (isset($_POST['nextConfirmation']))
+	{
+		// On sélectionne tous les champs de chaque table (rappel : 2 tables -> 1 pour les infos de voyage ; 1 pour les infos du voyageur)
+		$ListeInfoVoyage = $bdd->query("SELECT * FROM `Info_Voyage`");
+		$ListeInfoVoyageur = $bdd->query("SELECT * FROM `Info_Voyageur`");
+		$ListNombreVoyageur = $bdd->query("SELECT nombre_voyageurs FROM `Info_Voyage`");
+
+		// On fait des variables précédentes des variables de SESSION 
+		$_SESSION['ListeInfoVoyage'] = $ListeInfoVoyage;
+		$_SESSION['ListeInfoVoyageur'] = $ListeInfoVoyageur;
+		$_SESSION['ListNombreVoyageur'] = $ListNombreVoyageur;
+
+		// On reprend dans la table Info_voyage le nombre de voyageur inscrit pour chaque voyage et on en fait un tableau
+		// --> Autrement dit, la variable $listeNombre est un tableau reprenant des nombres. Ces nombres correspondent aux nombres d'inscrits pour chaque voyage différent. (Astuce : pour comprendre -> print_r($listeNombre);)
+		$i=0;
+		while($nombre = $ListNombreVoyageur->fetch())
+			{
+				$i = $nombre['nombre_voyageurs'];
+				$listeNombre[]=$i;
+				$i++;
+			}
+
+		// count permet de compter le nombre d'élément du tableau 'listeNombre'.
+		// On fait de chaque nombre de voyageur une variable de SESSION.
+		for($n=0 ; $n<count($listeNombre) ; $n++)
+		{
+			$_SESSION['nbre'.$n] = $listeNombre[$n];
+		}
+	}
+
 
 // 1) Définir comme variable $ID, l'ID de la dernière info (nom/date) ajoutée dans la base de donnée. Pour ce faire : 
 	// A) On compte le nombre d'entrées dans la table (SELECT COUNT(*) AS nbentrées FROM Info_Voyageur)
@@ -228,6 +265,10 @@
 		case 'confirmation':
 			include ('View_ConfirmationReservation.php');
 			break;
+
+		case 'liste':
+			include ('View_ListeReservation.php');
+			break;
 			
 		case 'cancel':
 			session_destroy();
@@ -251,8 +292,11 @@
 - problème d'affichage (présence ligne discontinue) quand on souhaite annuler une réservation (page View_Reservation.php)
 - Donner un max pour les champs d'entrée de type number
 - Pour les prix, vérifier avec l'age limite (12 ans) 
+- Aligner le bouton rafraichir sur la droite du rectangle
+- Régler les problèmes avec le CSS
+- Possibilité de revenir en arrière et que la case soit coché ou non selon ce qu'on avait fait avant ?
+
 
 2) Demander au prof :
-- Possibilité de revenir en arrière et que la case soit coché ou non selon ce qu'on avait fait avant ?
 - Problème : faut appuyer 2 fois pour destroyer la session
 -->

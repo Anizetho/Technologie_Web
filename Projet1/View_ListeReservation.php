@@ -14,31 +14,47 @@
 				LISTE DES RESERVATIONS </br>
 		</h1>
 
+		
 		<form action='Controller.php?page=reservation' method='post'> 
 			<input type='submit' value='Ajouter une réservation'> 
-		</form></br>
+		</form>
 
-		
 		<table>
 			<tr>
 				<th> ID </th>
 				<th> Destination </th>
 				<th> Assurance </th>
 				<th> Prix Total </th>
-				<th> Nom - Age </th>
+				<th> N°Voyageur - Nom - Age </th>
 				<th> Editer </th>
 				<th> Supprimer </th>
 			</tr>
-			<tr> 
-				<td> 4</td>
-				<td> Esapgne</td>
-				<td> Oui</td>
-				<td> 85</td>
-				<td> Anizet - 20 </br> Anizetbis - 18</td>
-				<td> <a href='index.php'> Editer </a></td>
-				<td> <a href='index.php'> Supprimer </a></td>
-			</tr>
-		</table>
-		
+
+			<?php
+				
+				// ************************************ AFFICHAGE CORRECTE DE TOUT LE TABLEAU ***************************************************
+				//count permet de compter le nombre d'élément
+				for($i=0; $i<count($listeNombre); $i++)
+				{	
+					$donneesVoyage = $ListeInfoVoyage->fetch();
+					echo '<tr><td>' . $donneesVoyage['ID'] . '</td><td>' . $donneesVoyage['destination'] . '</td><td>' . $donneesVoyage['assurance'] . '</td><td>' . $donneesVoyage['prix'] . '</td><td>';
+					for($n=0 ; $n<$_SESSION['nbre'.$i] ; $n++)
+					{
+						$p=$n+1;
+						$donneesVoyageur = $ListeInfoVoyageur->fetch();
+						echo $donneesVoyageur['ID']  . ' - '. $donneesVoyageur['nom'] . ' - ' . $donneesVoyageur['age'] . ' ans</br>';
+					}
+					echo "</td><td> <a href='Editer.class.php'> Editer </a></td>
+					<td> <a href='Supprimer.class.php'> Supprimer </a></td>
+					</tr>";
+				}
+				// **********************************************************************************************************************
+			?>
+
+		</table>	
+
+		<form action='Controller.php?page=liste' method='post'> 
+			<input type='submit' value='Rafraîchir la page' name='nextConfirmation'> 
+		</form>	
 	</body>
 </html>
