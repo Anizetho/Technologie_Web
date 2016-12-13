@@ -49,5 +49,11 @@ session_start();
 			</form>
 
 		</table>
+		<?php 
+			if(isset($_SESSION['modify'])) 
+			{?>
+				<font color="green"><h5><em>Vous êtes en train de modifier votre réservation...</em></h5></font> <?php
+			} 
+		?>
 	</body>
 </html>

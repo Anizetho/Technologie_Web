@@ -31,30 +31,32 @@
 			</tr>
 
 			<?php
-				
-				// ************************************ AFFICHAGE CORRECTE DE TOUT LE TABLEAU ***************************************************
-				//count permet de compter le nombre d'élément
-				for($i=0; $i<count($listeNombre); $i++)
-				{	
-					$donneesVoyage = $ListeInfoVoyage->fetch();
-					echo '<tr><td>' . $donneesVoyage['ID'] . '</td><td>' . $donneesVoyage['destination'] . '</td><td>' . $donneesVoyage['assurance'] . '</td><td>' . $donneesVoyage['prix'] . '</td><td>';
-					for($n=0 ; $n<$_SESSION['nbre'.$i] ; $n++)
+				// ********************************* AFFICHAGE NOM-AGE (sans calculer nbre voyageurs) **********************************
+				// *********************************************************************************************************************
+				if(isset($_SESSION['ListeInfoVoyageur']))
+				{
+					while ($donnees = $_SESSION['ListeInfoVoyageur']->fetch())
 					{
-						$p=$n+1;
-						$donneesVoyageur = $ListeInfoVoyageur->fetch();
-						echo $donneesVoyageur['ID']  . ' - '. $donneesVoyageur['nom'] . ' - ' . $donneesVoyageur['age'] . ' ans</br>';
+					    $tableauAges = explode(',' , $donnees['age']);
+					    $tableauNoms = explode(',' , $donnees['nom']);
+					    $donneesVoyage = $ListeInfoVoyage->fetch();
+						echo '<tr><td>' . $donneesVoyage['ID'] . '</td><td>' . $donneesVoyage['destination'] . '</td><td>' . $donneesVoyage['assurance'] . '</td><td>' . $donneesVoyage['prix'] . '</td><td>';
+					    for($n=0 ; $n<count($tableauAges) ; $n++)
+					    {
+					        $p=$n+1;
+					        echo $tableauNoms[$n] . ' - ' . $tableauAges[$n] . ' ans</br>';
+					    }
+					    echo "</td><td> <a href='View_Editer.php'> Editer n°" . $donneesVoyage['ID'] . "</a></td>
+						<td> <a href='View_Supprimer.php'> Supprimer </a></td>
+						</tr>";
 					}
-					echo "</td><td> <a href='Editer.class.php'> Editer </a></td>
-					<td> <a href='Supprimer.class.php'> Supprimer </a></td>
-					</tr>";
 				}
-				// **********************************************************************************************************************
+				//**********************************************************************************************************************
 			?>
-
 		</table>	
 
 		<form action='Controller.php?page=liste' method='post'> 
-			<input type='submit' value='Rafraîchir la page' name='nextConfirmation'> 
+			<input type='submit' value='Rafraîchir la page' name='nextConfirmation'> (Veuillez cliquer sur le bouton <em>"Rafaîchir la page"</em> si rien ne s'affiche) 
 		</form>	
 	</body>
 </html>

@@ -40,6 +40,14 @@ session_start();
 		</div>
 
 		<table><tr>
+		<?php 
+		if(isset($_SESSION['modify'])) 
+		{?>
+			<form method='post' action='controller.php?page=liste'>
+			<td align='center'><input style="background: green;" type='submit' value='Modifier' name='modify'>
+			</form><?php 
+
+		} ?>
 		<form method='post' action="Controller.php?page=confirmation">
 			<td> <input type='submit' value='Confirmer' name='nextValidation'> </td>
 		</form>
@@ -50,5 +58,13 @@ session_start();
 			<td align='center'> <input type='submit' value='Annuler la réservation' name='backcancel'></td></tr>
 		</form>	
 		</tr></table>
+		<div class="modification">
+		<?php 
+			if(isset($_SESSION['modify'])) 
+			{?>
+				<font color="green"><h5><em>Vous êtes en train de modifier votre réservation...</em></h5></font> <?php
+			} 
+		?>
+		</div>
 	</body>
 </html>
