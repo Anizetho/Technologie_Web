@@ -20,22 +20,22 @@ session_start();
 			<?php
 			echo "<table>
 				<tr><td> Destination : </td>
-				<td> " . $InfoVoyage->GetDestination() . "</td></tr>
+				<td> " . $InfoTravel->GetDestination() . "</td></tr>
 				<tr><td> Nombre de places : </td>
-				<td> " . $InfoVoyage->GetNb_traveler() . "</td></tr>";
+				<td> " . $InfoTravel->GetNb_traveler() . "</td></tr>";
 
-			for($i=0; $i<$InfoVoyage->GetNb_traveler() ; $i++)
+			for($i=0; $i<$InfoTravel->GetNb_traveler() ; $i++)
 			{
 				$p=$i+1;
 				echo "<tr><td>Passager n°" . $p . " :</tr></td> 
 				<tr><td> Nom : </td>
-				<td> " . $InfoVoyageur[$p]->GetName() . "</td></tr>
+				<td> " . $InfoTraveler[$p]->GetName() . "</td></tr>
 				<tr><td> Age : </td>
-				<td> " . $InfoVoyageur[$p]->GetAge() . "</td></tr>";
+				<td> " . $InfoTraveler[$p]->GetAge() . " ans</td></tr>";
 			}
 				
 			echo"<tr><td> Assurance annulation : </td>
-				<td> " . $InfoVoyage->GetInsurance() . "</td></tr></table>";
+				<td> " . $InfoTravel->GetInsurance() . "</td></tr></table>";
 			?>
 		</div>
 
@@ -43,14 +43,19 @@ session_start();
 		<?php 
 		if(isset($_SESSION['modify'])) 
 		{?>
-			<form method='post' action='controller.php?page=liste'>
+			<form method='post' action='controller.php?page=list'>
 			<td align='center'><input style="background: green;" type='submit' value='Modifier' name='modify'>
 			</form><?php 
+		}
 
-		} ?>
+		if(!isset($_SESSION['modify'])) 
+		{?>
 		<form method='post' action="Controller.php?page=confirmation">
 			<td> <input type='submit' value='Confirmer' name='nextValidation'> </td>
 		</form>
+		<?php
+		}
+		?>
 		<form method='post' action="Controller.php?page=details">
 			<td> <input type='submit' value='Retour à la page précédente' name='backValidation'> </td>
 		</form>
@@ -58,13 +63,12 @@ session_start();
 			<td align='center'> <input type='submit' value='Annuler la réservation' name='backcancel'></td></tr>
 		</form>	
 		</tr></table>
-		<div class="modification">
 		<?php 
 			if(isset($_SESSION['modify'])) 
 			{?>
-				<font color="green"><h5><em>Vous êtes en train de modifier votre réservation...</em></h5></font> <?php
+				<font color="green"><h5><em>Vous êtes en train de modifier votre réservation...</em></h5></font>
+				<?php
 			} 
 		?>
-		</div>
 	</body>
 </html>

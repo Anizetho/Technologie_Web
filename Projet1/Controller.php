@@ -7,8 +7,8 @@
 	include('Detail.class.php');
 	include('Confirmation.class.php');
 
-//**************************************************** Pour connecter la bdd ****************************************************
-//******************************************************(utilisation de PDO)*****************************************************
+//**************************************************** To connect the database ****************************************************
+//******************************************************(Using PDO)*****************************************************
 	try
         {
             $bdd = new PDO('mysql:host=localhost;dbname=Reservation;charset=utf8', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
@@ -19,278 +19,246 @@
         }
 
 
-//**************************************************** Pour "avancer" ****************************************************
-//********************************************("Etape suivante", "Confirmer")*********************************************
+//**************************************************** To advance ****************************************************
+//********************************************("next step", "Confirmation")*********************************************
 
-	// ************ Quand on appuye sur "Etape suivante" DEPUIS la page réservation (pour aller vers détail) *************
+	// ************ When we press "Next step (Etape suivante)" on the reservation page *************
 	if (isset($_POST["nextReservation"]))
 	{
-		// htmlspecialchars pour protéger contre la faille XSS
+		// htmlspecialchars to protect against XSS fault
+		// To save the data in session
 		$_SESSION['destination'] = htmlspecialchars($_POST['destination']);
 	    $_SESSION['nb_traveler'] = htmlspecialchars($_POST['nb_traveler']);
-	    // Si on a coché la case assurance
+	    // If the check box is checked
 	    if(isset($_POST['insurance']))
 			{
 				$_SESSION['insurance'] = 'OUI';
 			}
-		// Si on ne l'a pas cochée
+		// If the check box is not checked
 		else
 			{
 				$_SESSION['insurance'] = 'NON';
 			}
 		
-		// On rassemble ces infos dans les classes
-		$InfoVoyage = new InfoReservation($_SESSION['destination'], $_SESSION['nb_traveler'], $_SESSION['insurance']);
+		// To collect this info
+		$InfoTravel = new InfoReservation($_SESSION['destination'], $_SESSION['nb_traveler'], $_SESSION['insurance']);
 	}
 	
-	// On rassemble ces infos (destination, nombre de voyageurs, assurance) avec les classes
-	$InfoVoyage = new InfoReservation($_SESSION['destination'], $_SESSION['nb_traveler'], $_SESSION['insurance']);
+	// To use this info at any time
+	$InfoTravel = new InfoReservation($_SESSION['destination'], $_SESSION['nb_traveler'], $_SESSION['insurance']);
+	// To see if we must tick the box when the customer go back on the reservation page
+	if ($InfoTravel->GetInsurance() == 'OUI') {$check = checked;}
+	if ($InfoTravel->GetInsurance() == 'NON') {$check = '';}
 
 
 
 
 
 
-	// ************* Quand on appuye sur "Etape suivante" DEPUIS la page détail (pour aller vers validation) *************
+	// ************* When we press "Next step (Etape suivante)" on the detail page *************
 	if (isset($_POST["nextDetails"]))
 	{
-		// On rassemble ces infos (nom et age) avec les classes
-		$AgeInf = 0;
-		$AgeSupp = 0;
-		for($i=0; $i<$InfoVoyage->GetNb_traveler(); $i++)
+		// AgeLow and AgeUp -> To calculate the price (used after)
+		$AgeLow = 0;
+		$AgeUp = 0;
+		// To save the data of each person in session
+		for($i=0; $i<$InfoTravel->GetNb_traveler(); $i++)
 		{
 			$p=$i+1;
 
-			$_SESSION['nom'.$i] = htmlspecialchars($_POST['nom'][$i]);
+			$_SESSION['name'.$i] = htmlspecialchars($_POST['name'][$i]);
 			$_SESSION['age'.$i] = htmlspecialchars($_POST['age'][$i]);
 			
-			// Pour teste l'utilité de ce for 
-			//echo $p . ") " . $_SESSION['nom'.$i] . "</br>"; // Affiche par ex. : 1) Anizet
-			//echo $p . ") " . $_SESSION['age'.$i] . "</br>"; // Affiche par ex. : 1) 20
-
-			// Remarque : cette info porte le n° du passager (on commence à 1, pas 0)
-		    $InfoVoyageur[$p] = new Traveler($_SESSION['nom'.$i], $_SESSION['age'.$i]);
+		    $InfoTraveler[$p] = new Traveler($_SESSION['name'.$i], $_SESSION['age'.$i]);
 
 		    if($_SESSION['age'.$i]<13)
 			{
-				$AgeInf+=1;
+				$AgeLow+=1;
 			}
 			else
 			{
-				$AgeSupp+=1;
+				$AgeUp+=1;
 			}
 		}
 
-		// On crée des variables de SESSION pour transmettre plus facilement les informations
-		$_SESSION['AgeInf']=$AgeInf;
-		$_SESSION['AgeSupp']=$AgeSupp;
-		$SauvegardeAges = new SaveAge($_SESSION['AgeInf'], $_SESSION['AgeSupp']);
+		$_SESSION['AgeLow']=$AgeLow;
+		$_SESSION['AgeUp']=$AgeUp;
+		$SavingAges = new SaveAge($_SESSION['AgeLow'], $_SESSION['AgeUp']);
 	}
 
-	// 1) On rassemble les infos (nom, age) avec les classes
-	// 2) On crée 2 listes : Une avec tous les noms ; une autre avec tous les ages
-	for($i=0; $i<$InfoVoyage->GetNb_traveler(); $i++)
+	// To use this info at any time (+ in SESSION !)
+	// Creation of 2 lists : One with the names and one with the ages
+	for($i=0; $i<$InfoTravel->GetNb_traveler(); $i++)
 		{
 			$p=$i+1;
-			// Remarque : cette info porte le n° du passager (on commence à 1, pas 0)
-		    $InfoVoyageur[$p] = new Traveler($_SESSION['nom'.$i], $_SESSION['age'.$i]);
+		    $InfoTraveler[$p] = new Traveler($_SESSION['name'.$i], $_SESSION['age'.$i]);
 
-		    // Pour calculer le prix total
+		    // To calculate the total price
+		    // Different price between the adults and the children
 		    if($_SESSION['age'.$i]<13)
 			{
-				$AgeInf+=1;
+				$AgeLow+=1;
 			}
 			else
 			{
-				$AgeSupp+=1;
+				$AgeUp+=1;
 			}
 
-		    // On ajoute chaque age et chaque nom dans une liste (pour la bdd)
-		    $ListeNom[] = $InfoVoyageur[$p]->GetName();
-			$ListeAge[] = $InfoVoyageur[$p]->GetAge();
+		    // Add each name and each age to a list
+		    $ListName[] = $InfoTraveler[$p]->GetName();
+			$ListAge[] = $InfoTraveler[$p]->GetAge();
 		}
-	// On crée des variables de session pour transmettre plus facilement les informations
-	$_SESSION['AgeInf']=$AgeInf;
-	$_SESSION['AgeSupp']=$AgeSupp;
-	//On rassemble les infos (AgeInf, AgeSupp) avec les classes
-	$SauvegardeAges = new SaveAge($_SESSION['AgeInf'], $_SESSION['AgeSupp']);
 
-	// On crée une 'liste' permettant d'afficher CORRECTEMENT les noms dans la bdd et on en fait une variable de session
-	$correctionNom = implode(',', $ListeNom);
-	$_SESSION['ListeNom'] = $correctionNom;
+	$_SESSION['AgeLow']=$AgeLow;
+	$_SESSION['AgeUp']=$AgeUp;
+	$SavingAges = new SaveAge($_SESSION['AgeLow'], $_SESSION['AgeUp']);
 
-	// On crée une 'liste' permettant d'afficher CORRECTEMENT les ages dans la bdd et on en fait une variable de session
-	$correctionAge = implode(',' , $ListeAge);
-	$_SESSION['ListeAge'] = $correctionAge;
+	// To create a list who display correctly the names in the database (+ SESSION).
+	$correctionName = implode(',', $ListName);
+	$_SESSION['ListName'] = $correctionName;
 
+	// To create a list who display correctly the ages in the database (+ SESSION).
+	$correctionAge = implode(',' , $ListAge);
+	$_SESSION['ListAge'] = $correctionAge;
 
 
 
 
 
 
-	// ************* Quand on appuye sur "Confirmer" DEPUIS la page Validation (pour aller vers confirmation) *************
+
+	// ************* When we press "Confirm (Confirmer)" on the validation page *************
 	if (isset($_POST["nextValidation"]))
 	{
-		// On va calculer le prix total du voyage :
-		// 1) On regarde si l'assurance est cochée
-		// prix assurance = 20€
-		if ($InfoVoyage->GetInsurance() == "OUI")
+		// 3 steps to calculate the total price :
+		// 1) the insurance is checked or not
+		// insurance price = 20€
+		if ($InfoTravel->GetInsurance() == "OUI")
 		{
-			$priceAssurance = 20;
+			$priceInsurance = 20;
 		}
-		if($InfoVoyage->GetInsurance() == "NON")
+		if($InfoTravel->GetInsurance() == "NON")
 		{
-			$priceAssurance = 0;
+			$priceInsurance = 0;
 		}
-		// 2) On regarde quel age ont les voyageurs et en fonction, on calcule les prix
-		//  <12ans => 10€   MAIS    >12ans => 15€
-		$AgeInfGet = $SauvegardeAges->GetAgeInf();
-		$AgeSuppGet = $SauvegardeAges->GetAgeSupp();
-		$priceInf = $AgeInfGet *10;
-		$priceSupp = $AgeSuppGet*15;
+		// 2) We looks the age of each people
+		// until 12years old => 10€   BUT    >12years old => 15€
+		$AgeLowGet = $SavingAges->GetAgeLow();
+		$AgeUpGet = $SavingAges->GetAgeUp();
+		$priceLow = $AgeLowGet *10;
+		$priceUp = $AgeUpGet*15;
 
-		// 3) Au final, le prix total vaut : 
-		$price = $priceInf+$priceSupp+$priceAssurance;
-		// On en crée une variable de SESSION
+		// 3) In the end, the total price is : 
+		$price = $priceLow+$priceUp+$priceInsurance;
 		$_SESSION['TotalPrice']=$price;
 
 
-		// *********** ENREGISTREMENT DES INFOS DANS LA BASE DE DONNEE ***********		
-
-		// On enregistre la destination, le nombre de voyageurs, l'assurance annulation, chaque passager et chaque age de la table 'Info_voyage' de la bdd (base de donnée) et ce, dès qu'on a appuyé sur le bouton "Confirmer"
-		//UPDATE `Info_Voyage` SET `ID`=98,`nom`='Pierre, Antoine',`age`='20, 21' WHERE ID=98
-		$reqInfoVoyage = $bdd->prepare('INSERT INTO Info_Voyage(destination, assurance, nombre_voyageurs, prix, nom, age) VALUES(:destination, :assurance, :nombre_voyageurs, :prix, :nom, :age)');
-		$reqInfoVoyage->execute(array(
-			'destination' => $InfoVoyage->GetDestination(),
-		    'assurance' => $InfoVoyage->GetInsurance(),
-		    'nombre_voyageurs' => $InfoVoyage->GetNb_traveler(),
+		// *********** Saving all data in the database ***********	
+		// Using INSERT INTO ... VALUES ... 	
+		$reqInfoTravel = $bdd->prepare('INSERT INTO Info_Voyage(destination, assurance, nombre_voyageurs, prix, nom, age) VALUES(:destination, :assurance, :nombre_voyageurs, :prix, :nom, :age)');
+		$reqInfoTravel->execute(array(
+			'destination' => $InfoTravel->GetDestination(),
+		    'assurance' => $InfoTravel->GetInsurance(),
+		    'nombre_voyageurs' => $InfoTravel->GetNb_traveler(),
 		    'prix' => $_SESSION['TotalPrice'], 
-		    'nom' => $_SESSION['ListeNom'], 
-		    'age' => $_SESSION['ListeAge']
+		    'nom' => $_SESSION['ListName'], 
+		    'age' => $_SESSION['ListAge']
 	    ));
 
-	    session_destroy(); // pas oublier !!!
+	    session_destroy(); 
 	}
 
 
 
 
 
-	// ************* Quand on appuye sur "Modifier" DEPUIS la page Validation (pour aller vers confirmation) *************
+	// ************* When we press "Modify (Modifier)" on the validation page *************
 	if (isset($_POST["modify"]))
 	{
-		// On va calculer le prix total du voyage :
-		// 1) On regarde si l'assurance est cochée
-		// prix assurance = 20€
-		if ($InfoVoyage->GetInsurance() == "OUI")
+		// The same calculations (= same explanations just before) to get the total price
+		if ($InfoTravel->GetInsurance() == "OUI")
 		{
-			$priceAssurance = 20;
+			$priceInsurance = 20;
 		}
-		if($InfoVoyage->GetInsurance() == "NON")
+		if($InfoTravel->GetInsurance() == "NON")
 		{
-			$priceAssurance = 0;
+			$priceInsurance = 0;
 		}
-		// 2) On regarde quel age ont les voyageurs et en fonction, on calcule les prix
-		//  <12ans => 10€   MAIS    >12ans => 15€
-		$AgeInfGet = $SauvegardeAges->GetAgeInf();
-		$AgeSuppGet = $SauvegardeAges->GetAgeSupp();
-		$priceInf = $AgeInfGet *10;
-		$priceSupp = $AgeSuppGet*15;
 
-		// 3) Au final, le prix total vaut : 
-		$price = $priceInf+$priceSupp+$priceAssurance;
-		// On en crée une variable de SESSION
+		$AgeLowGet = $SavingAges->GetAgeLow();
+		$AgeUpGet = $SavingAges->GetAgeUp();
+		$priceLow = $AgeLowGet *10;
+		$priceUp = $AgeUpGet*15;
+
+		$price = $priceLow+$priceUp+$priceInsurance;
 		$_SESSION['TotalPrice']=$price;
 
 
-		// *********** ENREGISTREMENT DES INFOS MODIFIEES DANS LA BASE DE DONNEE ***********		
-
-		// On modifie (update) la bdd et ce, dès qu'on a appuyé sur le bouton "Modifier"
-		$reqInfoVoyage = $bdd->prepare('UPDATE `Info_Voyage` SET `destination`=:destination,`assurance`=:assurance,`nombre_voyageurs`=:nombre_voyageurs,`prix`=:prix,`nom`=:nom,`age`=:age WHERE ID=:ID');
-		$reqInfoVoyage->execute(array(
-			'destination' => $InfoVoyage->GetDestination(),
-		    'assurance' => $InfoVoyage->GetInsurance(),
-		    'nombre_voyageurs' => $InfoVoyage->GetNb_traveler(),
+		// *********** Saving all modified data in the database ***********	
+		// Using UPDATE ... SET ... WHERE
+		$reqInfoTravel = $bdd->prepare('UPDATE `Info_Voyage` SET `destination`=:destination,`assurance`=:assurance,`nombre_voyageurs`=:nombre_voyageurs,`prix`=:prix,`nom`=:nom,`age`=:age WHERE ID=:ID');
+		$reqInfoTravel->execute(array(
+			'destination' => $InfoTravel->GetDestination(),
+		    'assurance' => $InfoTravel->GetInsurance(),
+		    'nombre_voyageurs' => $InfoTravel->GetNb_traveler(),
 		    'prix' => $_SESSION['TotalPrice'], 
-		    'nom' => $_SESSION['ListeNom'], 
-		    'age' => $_SESSION['ListeAge'],
+		    'nom' => $_SESSION['ListName'], 
+		    'age' => $_SESSION['ListAge'],
 		    'ID' => $_SESSION['IDVoyage'],
 	    ));
 
-	    session_destroy(); // pas oublier !!!
+	    session_destroy(); 
 	}
 
 
 
 
 
-	// ************* Quand on appuye sur "Voir la liste des réservations" DEPUIS la page Confirmation (pour aller vers liste) *************
+	// ************* When we press "See the reservation list (Voir la liste des réservations)" on the confirmation page *************
 	if (isset($_POST['nextConfirmation']))
 	{
-		// On sélectionne tous les champs de chaque table
-		$ListeInfoVoyageur = $bdd->query("SELECT * FROM `Info_Voyage`");
-		$ListeInfoVoyage = $bdd->query("SELECT * FROM `Info_Voyage`");
+		// To select all fields from each table (+ SESSION) 
+		$ListInfoTraveler = $bdd->query("SELECT * FROM `Info_Voyage`");
+		$ListInfoTravel = $bdd->query("SELECT * FROM `Info_Voyage`");
 
-		// On fait de la variable précédentes une variable de SESSION 
-		$_SESSION['ListeInfoVoyageur'] = $ListeInfoVoyageur;
-		$_SESSION['ListeInfoVoyage'] = $ListeInfoVoyage;
+		$_SESSION['ListInfoTraveler'] = $ListInfoTraveler;
+		$_SESSION['ListInfoTravel'] = $ListInfoTravel;
 	}
 
 
-// 1) Définir comme variable $ID, l'ID de la dernière info (nom/date) ajoutée dans la base de donnée. Pour ce faire : 
-	// A) On compte le nombre d'entrées dans la table (SELECT COUNT(*) AS nbentrées FROM Info_Voyageur)
-	// B) On sélectionne l'ID de la dernière entrée (SELECT max(Id) FROM Info_Voyageur)
-	// C)
-// 2) Retirer le nombre de voyageur à cet ID ($IDNEW = $ID-InfoVoyage->GetNb_Traveler();)
-// 3) Selectionner les infos à partir de ce nouvel ID ($IDNEW) et jusqu'au dernier ID ajouté ($ID) (SELECT `nom`, `age` FROM `Info_Voyageur` LIMIT $IDNEW, $ID)
 
 
-//**************************************************** Pour les retour en arrière ****************************************************
-//**********************("Retour à la page précédente", "Annuler la réservation", "Retour à la page d'acceuil")***********************
 
-	// 1) Si on se trouve sur la page détail et qu'on veut revenir au formulaire de départ
-	if (isset($_POST["backDetails"]))
-	{
-	}
+//**************************************************** To go back ****************************************************
+//**********************("Return to the previous page", "cancel the reservation", "Back to home page")***********************
 
-	// 2) Si on se trouve sur la page Validation et qu'on veut revenir à la page précédente (détail)
-	if (isset($_POST["backValidation"]))
-	{
-	}
-
-	// 3) Si on se trouve sur une des pages (n'importe laquelle) et on souhaite annuler la réservation
+	// If we wish to cancel a reservation (from any page) 
 	if (isset($_POST["backcancel"]))
 	{
 		echo "<h6>ATTENTION : En annulant votre réservation, vous allez perdre toutes les données déjà entrées précédemment ! Êtes-vous certain d'annuler ? </br>-> Si oui, cliquez sur <em>'Annuler la réservation'</em>.</br> -> Sinon, cliquez sur <em>'Etape suivante'</em>.<h6>";
 	}
 
-	// Autre cas : si on appuye sur "annuler réservation"	
-
 	
-
+//**************************************************** To know which page to open ****************************************************
+//********************************************************** Using switch() **********************************************************
 	
-	//Pour savoir quelle page ouvrir
-	// GET -> Les données sont transmises dans l'URL
 	if (isset($_GET['page']))
 	{
 		$page = $_GET['page'];
 	}
-	// De base, on lance la page View_Reservation.php
+	// Initially, we launch the reservation page
 	else
 	{
 		$page = 'reservation';
 	}
 	
-	// On regarde quelle valeur de page nous est renvoiée
-	// Afin de savoir sur quelle page on doit aller
+	// with the value of the $_GET['page'] -> each switch 
 	switch($page)
 	{	
 		case 'reservation':
 			include ('View_Reservation.php');
 			break;
 			
-
 		case 'details':
 			
 			include ('View_DetailReservation.php');
@@ -304,7 +272,7 @@
 			include ('View_ConfirmationReservation.php');
 			break;
 
-		case 'liste':
+		case 'list':
 			include ('View_ListeReservation.php');
 			break;
 			
@@ -317,21 +285,18 @@
 				}
 			include('View_Reservation.php');
 			break;
-	}
-			
+	}		
 ?>
 
 <!-- 
 1) To Do : 
-- Possibilité de revenir en arrière et que la case soit coché ou non selon ce qu'on avait fait avant ?
 - pas oublier la protection avec htmlspecialchars -> Ok
 - protection pour entrer des nombres entiers -> Ok
-- problème d'affichage (présence ligne discontinue) quand on souhaite annuler une réservation (page View_Reservation.php)
-- Donner un max pour les champs d'entrée de type number
-- Pour les prix, vérifier avec l'age limite (12 ans) 
-- Régler les problèmes avec le CSS
+- Donner un max pour les champs d'entrée de type number -> Ok
+- Pour les prix, vérifier avec l'age limite (12 ans) -> Ok
+- Problème affichage (encadré en-dessous) sur la page calidation -> Ok
+- Faire en sorte que le bouton "Confirmer" sur la page de validation n'apparaisse plus quand on modifie une réservation -> Ok
+- Possibilité de revenir en arrière et que la case soit coché ou non selon ce qu'on avait fait avant -> Ok
+- problème d'affichage (présence ligne discontinue) quand on souhaite annuler une réservation (page View_Reservation.php) -> Pas nécessaire de corriger ! -> Ok
 
-
-2) Demander au prof :
-- Problème : faut appuyer 2 fois pour destroyer la session
--->
+- Régler les problèmes avec le CSS -> à priori Ok -> Vérifier sur un autre ordi !

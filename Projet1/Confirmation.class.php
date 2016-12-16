@@ -4,30 +4,25 @@
 <?php
 	class SaveAge
 	{
-	// attributs --> ATTENTION private
-	private $AgeInf;
-	private $AgeSupp;
+	private $AgeLow;
+	private $AgeUp;
 	
-	// Création constructeur 
 	public function __construct($AgeInférieur, $AgeSuppérieur) 
 	{ 
-	   $this->AgeInf = $AgeInférieur;
-	   $this->AgeSupp = $AgeSuppérieur;
+	   $this->AgeLow = $AgeInférieur;
+	   $this->AgeUp = $AgeSuppérieur;
 	}
 	
-	// Création des différentes méthodes 
-	public function GetAgeInf()  
+	public function GetAgeLow()  
 	{  
 		
-		// "$this" permet d'accéder aux attributs de la classe
-	   return $this->AgeInf ;  
+	   return $this->AgeLow ;  
 	}
 
-	public function GetAgeSupp()  
+	public function GetAgeUp()  
 	{  
 		
-		// "$this" permet d'accéder aux attributs de la classe
-	   return $this->AgeSupp ;  
+	   return $this->AgeUp ;  
 	}
 	}
 ?>

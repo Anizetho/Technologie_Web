@@ -1,11 +1,11 @@
-<!-- View_Reservation.php --> 
+<!-- View_ListeReservation.php --> 
 <!-- Author : Thomas Anizet --> 
 
 <!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8" />
-        <title>Reservation</title>
+        <title>Reservation list</title>
         <link rel="stylesheet" href="StyleListe.css" />
 	</head>
 
@@ -31,15 +31,15 @@
 			</tr>
 
 			<?php
-				// ********************************* AFFICHAGE NOM-AGE (sans calculer nbre voyageurs) **********************************
+				// *********************************************** Display NAME-AGE ****************************************************
 				// *********************************************************************************************************************
-				if(isset($_SESSION['ListeInfoVoyageur']))
+				if(isset($_SESSION['ListInfoTraveler']))
 				{
-					while ($donnees = $_SESSION['ListeInfoVoyageur']->fetch())
+					while ($donnees = $_SESSION['ListInfoTraveler']->fetch())
 					{
 					    $tableauAges = explode(',' , $donnees['age']);
 					    $tableauNoms = explode(',' , $donnees['nom']);
-					    $donneesVoyage = $ListeInfoVoyage->fetch();
+					    $donneesVoyage = $ListInfoTravel->fetch();
 						echo '<tr><td>' . $donneesVoyage['ID'] . '</td><td>' . $donneesVoyage['destination'] . '</td><td>' . $donneesVoyage['assurance'] . '</td><td>' . $donneesVoyage['prix'] . '</td><td>';
 					    for($n=0 ; $n<count($tableauAges) ; $n++)
 					    {
@@ -55,7 +55,7 @@
 			?>
 		</table>	
 
-		<form action='Controller.php?page=liste' method='post'> 
+		<form action='Controller.php?page=list' method='post'> 
 			<input type='submit' value='Rafraîchir la page' name='nextConfirmation'> (Veuillez cliquer sur le bouton <em>"Rafaîchir la page"</em> si rien ne s'affiche) 
 		</form>	
 	</body>

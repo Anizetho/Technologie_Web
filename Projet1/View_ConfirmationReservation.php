@@ -23,7 +23,7 @@
 			<td> <input type='submit' value="Retour à la page d'acceuil"> </td>
 		</form>	
 
-		<form method='post' action="Controller.php?page=liste">
+		<form method='post' action="Controller.php?page=list">
 			<td> <input type='submit' value="Voir la liste des réservations" name='nextConfirmation'> </td>
 		</form>		
 		</tr>

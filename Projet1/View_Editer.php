@@ -1,4 +1,4 @@
-<!-- Supprimer.class.php --> 
+<!-- View_Editer.php --> 
 <!-- Author : Thomas Anizet --> 
 <?php
 include("Reservation.class.php");
@@ -8,7 +8,7 @@ include("Detail.class.php");
 <html>
 	<head>
 		<meta charset="utf-8" />
-        <title>Reservation</title>
+        <title>Edit reservation</title>
         <link rel="stylesheet" href="StyleNew.css" />
 	</head>
 
@@ -23,13 +23,13 @@ include("Detail.class.php");
 		<table>
 			<form action="Editer_post.php" method="post">
 				<tr><td> ID de voyage : </td>
-				<td><input type='number' min='0' name='IDVoyage' value='' required /></td></tr>
+				<td><input type='number' min='0' max='100000' name='IDVoyage' value='' required /></td></tr>
 		</table>
 			<input type='submit'  value='Modifier' >
 			</form>
 		</nav>
 
-		<form action='Controller.php?page=liste' method='post'>
+		<form action='Controller.php?page=list' method='post'>
 			<div class='input'><input type='submit' value='Retourner à la liste des réservations' name='nextConfirmation'></div>
 		<form>
 

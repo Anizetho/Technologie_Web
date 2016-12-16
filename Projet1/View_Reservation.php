@@ -21,13 +21,13 @@
 		<table>
 			<form action="Controller.php?page=details" method="post">
 				<tr><td> Destination : </td>
-				<td><input type='text' name='destination' placeholder='Exemple : Brésil,...' value='<?php if(isset($InfoVoyage)){echo $InfoVoyage->GetDestination();}?>' required /></td></tr>
+				<td><input type='text' name='destination' placeholder='Exemple : Brésil,...' value='<?php if(isset($InfoTravel)){echo $InfoTravel->GetDestination();}?>' required /></td></tr>
 				
 				<tr><td> Nombre de places : </td>
-				<td><input type='number' min='1' name='nb_traveler' value='<?php if(isset($InfoVoyage)){echo $InfoVoyage->GetNb_traveler();}?>' required /></td></tr>
+				<td><input type='number' min='1' max='10' name='nb_traveler' value='<?php if(isset($InfoTravel)){echo $InfoTravel->GetNb_traveler();}?>' required /></td></tr>
 				
 				<tr><td> Assurance annulation : </td>
-				<td><input type='checkbox' name='insurance'/></td></tr>
+				<td><input type='checkbox' name='insurance' <?php echo $check; ?> /></td></tr>
 		</table>
 		</div>
 		<table>

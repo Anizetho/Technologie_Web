@@ -1,9 +1,5 @@
 <?php
-session_start(); // On démarre la session AVANT toute chose
-
-// Effectuer ici la requête qui insère le message
-// On déclare comme variables superglobales, les données entrées... 
-//... dans le formulaire page précédente 
+session_start(); 
 $_SESSION['IDVoyage'] = $_POST['IDVoyage'];
 
 try
@@ -23,7 +19,7 @@ $SuppVoyage->execute(array(
 
 
 
-// Puis rediriger vers la list des réservations comme ceci :
-header('Location: Controller.php?page=liste');
+// To redirect on the list of the reservations
+header('Location: Controller.php?page=list');
 
 ?>

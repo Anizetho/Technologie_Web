@@ -22,13 +22,13 @@ session_start();
 				<tr><td>
 
 					<?php
-						for ($i=0; $i < $InfoVoyage->GetNb_traveler(); $i++)
+						for ($i=0; $i < $InfoTravel->GetNb_traveler(); $i++)
 						{
 							$p = $i+1;
 							echo "Passager n°" . $p . " : ";
 						?>	
-							<p> Nom : <input type='text' name='nom[]' value='<?php if(isset($InfoVoyageur[$p])){echo $InfoVoyageur[$p]->GetName();}?>' required /></p>
-							<p> Age : <input type='number' min='1' name='age[]' value='<?php if(isset($InfoVoyageur[$p] )){echo $InfoVoyageur[$p]->GetAge();}?>' required /></p>
+							<p> Nom : <input type='text' name='name[]' value='<?php if(isset($InfoTraveler[$p])){echo $InfoTraveler[$p]->GetName();}?>' required /></p>
+							<p> Age : <input type='number' min='1' max='120' name='age[]' value='<?php if(isset($InfoTraveler[$p] )){echo $InfoTraveler[$p]->GetAge();}?>' required /></p>
 						<?php
 						}
 

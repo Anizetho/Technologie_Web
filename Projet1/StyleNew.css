@@ -40,16 +40,6 @@ p
     width:310px;
 }
 
-.modification
-{
-    border-style:double;
-    border-color:grey;
-    padding-left:10px;
-    margin-left:20px;
-    width:310px; 
-    color: green; /* Le texte de la page sera blanc */
-}
-
 .tableaux
 {
     display:inline-block;
@@ -69,6 +59,7 @@ nav
     padding-bottom: 10px;
 }
 
+/*
 section
 {
     display: inline-block;    
@@ -79,6 +70,7 @@ section
     padding-top: 8px;
     padding-bottom: 10px;
 }
+*/
 
 
 /* 
