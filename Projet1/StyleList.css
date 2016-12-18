@@ -1,0 +1,29 @@
+/*<!-- View_Reservation.php --> 
+<!-- Author : Thomas Anizet --> */
+body
+{
+    background-color: silver; 
+    color: black; 
+}
+
+form
+{
+    margin-left:20px;
+}
+table
+{
+    border-style:double;
+    border-color:grey;
+    margin-left:20px;
+}
+
+td, th
+{
+    border: 1px solid black;
+}
+
+a
+{
+    text-decoration: underline;
+    color: blue;
+}

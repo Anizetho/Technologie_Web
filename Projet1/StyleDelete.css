@@ -1,0 +1,25 @@
+body
+{
+    background-color: silver; 
+    color: maroon; 
+	background-image:url(gifDelete.GIF);
+	background-position:center center;
+	background-size: cover;
+	height: 932px;
+	background-repeat:no-repeat;
+	background-attachment:fixed;
+}
+
+h1
+{
+	text-decoration: underline;
+}
+
+.news
+{
+    border-style:double;
+    border-color:maroon;
+	border-width:6px;
+    width:500px;
+	background-color: rgba(99, 151, 222, 1); 
+}
