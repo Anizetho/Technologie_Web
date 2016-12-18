@@ -42,13 +42,22 @@
 		
 		// To collect this info
 		$InfoTravel = new InfoReservation($_SESSION['destination'], $_SESSION['nb_traveler'], $_SESSION['insurance']);
+		
+		// To indicate that we have click on the button -> more explanations on the next if condition
+		$_SESSION['checkNextReservation'] = TRUE;
 	}
 	
-	// To use this info at any time
-	$InfoTravel = new InfoReservation($_SESSION['destination'], $_SESSION['nb_traveler'], $_SESSION['insurance']);
-	// To see if we must tick the box when the customer go back on the reservation page
-	if ($InfoTravel->GetInsurance() == 'OUI') {$check = checked;}
-	if ($InfoTravel->GetInsurance() == 'NON') {$check = '';}
+	// Once we have enter the destination, the nb_traveler and the insurance, we save all in session
+	if(isset($_SESSION['checkNextReservation']))
+	{
+		// To use this info at any time
+		$InfoTravel = new InfoReservation($_SESSION['destination'], $_SESSION['nb_traveler'], $_SESSION['insurance']);
+		// To see if we must tick the box when the customer go back on the reservation page
+		if ($InfoTravel->GetInsurance() == 'OUI') {$check = 'checked';}
+		if ($InfoTravel->GetInsurance() == 'NON') {$check = '';}
+	}
+
+
 
 
 
@@ -84,42 +93,52 @@
 		$_SESSION['AgeLow']=$AgeLow;
 		$_SESSION['AgeUp']=$AgeUp;
 		$SavingAges = new SaveAge($_SESSION['AgeLow'], $_SESSION['AgeUp']);
+		
+		// To indicate that we have click on the button -> more explanations on the next if condition
+		$_SESSION['checkNextDetails'] = TRUE;
 	}
 
-	// To use this info at any time (+ in SESSION !)
-	// Creation of 2 lists : One with the names and one with the ages
-	for($i=0; $i<$InfoTravel->GetNb_traveler(); $i++)
-		{
-			$p=$i+1;
-		    $InfoTraveler[$p] = new Traveler($_SESSION['name'.$i], $_SESSION['age'.$i]);
-
-		    // To calculate the total price
-		    // Different price between the adults and the children
-		    if($_SESSION['age'.$i]<13)
+	// Once we have entered the name and the age of each traveler, we save all in session	
+	if(isset($_SESSION['checkNextDetails']))
+	{
+		// To use this info at any time (+ in SESSION !)
+		// Creation of 2 lists : One with the names and one with the ages
+		$AgeLow = 0;
+		$AgeUp = 0;
+		for($i=0; $i<$InfoTravel->GetNb_traveler(); $i++)
 			{
-				$AgeLow+=1;
+				$p=$i+1;
+			    $InfoTraveler[$p] = new Traveler($_SESSION['name'.$i], $_SESSION['age'.$i]);
+
+			    // To calculate the total price
+			    // Different price between the adults and the children
+			    if($_SESSION['age'.$i]<13)
+				{
+					$AgeLow+=1;
+				}
+				else
+				{
+					$AgeUp+=1;
+				}
+
+			    // Add each name and each age to a list
+			    $ListName[] = $InfoTraveler[$p]->GetName();
+				$ListAge[] = $InfoTraveler[$p]->GetAge();
 			}
-			else
-			{
-				$AgeUp+=1;
-			}
 
-		    // Add each name and each age to a list
-		    $ListName[] = $InfoTraveler[$p]->GetName();
-			$ListAge[] = $InfoTraveler[$p]->GetAge();
-		}
+		$_SESSION['AgeLow']=$AgeLow;
+		$_SESSION['AgeUp']=$AgeUp;
+		$SavingAges = new SaveAge($_SESSION['AgeLow'], $_SESSION['AgeUp']);
 
-	$_SESSION['AgeLow']=$AgeLow;
-	$_SESSION['AgeUp']=$AgeUp;
-	$SavingAges = new SaveAge($_SESSION['AgeLow'], $_SESSION['AgeUp']);
+		// To create a list who display correctly the names in the database (+ SESSION).
+		$correctionName = implode(',', $ListName);
+		$_SESSION['ListName'] = $correctionName;
 
-	// To create a list who display correctly the names in the database (+ SESSION).
-	$correctionName = implode(',', $ListName);
-	$_SESSION['ListName'] = $correctionName;
-
-	// To create a list who display correctly the ages in the database (+ SESSION).
-	$correctionAge = implode(',' , $ListAge);
-	$_SESSION['ListAge'] = $correctionAge;
+		// To create a list who display correctly the ages in the database (+ SESSION).
+		$correctionAge = implode(',' , $ListAge);
+		$_SESSION['ListAge'] = $correctionAge;
+	}
+	
 
 
 
@@ -148,7 +167,7 @@
 		$priceLow = $AgeLowGet *10;
 		$priceUp = $AgeUpGet*15;
 
-		// 3) In the end, the total price is : 
+		// 3) At the end, the total price is : 
 		$price = $priceLow+$priceUp+$priceInsurance;
 		$_SESSION['TotalPrice']=$price;
 
@@ -164,8 +183,6 @@
 		    'nom' => $_SESSION['ListName'], 
 		    'age' => $_SESSION['ListAge']
 	    ));
-
-	    session_destroy(); 
 	}
 
 
@@ -235,7 +252,7 @@
 	// If we wish to cancel a reservation (from any page) 
 	if (isset($_POST["backcancel"]))
 	{
-		echo "<h6>ATTENTION : En annulant votre réservation, vous allez perdre toutes les données déjà entrées précédemment ! Êtes-vous certain d'annuler ? </br>-> Si oui, cliquez sur <em>'Annuler la réservation'</em>.</br> -> Sinon, cliquez sur <em>'Etape suivante'</em>.<h6>";
+		echo "<h6>ATTENTION : En annulant votre réservation, vous allez perdre toutes les données déjà entrées précédemment ! Êtes-vous certain d'annuler ? </br>-> Si oui, cliquez sur <em>'Annuler la réservation'</em>.</br> -> Sinon, cliquez sur <em>'Etape suivante'</em>.</h6>";
 	}
 
 	
@@ -273,7 +290,7 @@
 			break;
 
 		case 'list':
-			include ('View_ListeReservation.php');
+			include ('View_ListReservation.php');
 			break;
 			
 		case 'cancel':
@@ -299,4 +316,8 @@
 - Possibilité de revenir en arrière et que la case soit coché ou non selon ce qu'on avait fait avant -> Ok
 - problème d'affichage (présence ligne discontinue) quand on souhaite annuler une réservation (page View_Reservation.php) -> Pas nécessaire de corriger ! -> Ok
 
+- Variables de session -> Régler probmème
+- Age up et ageLow -> Régler problème !  
+
 - Régler les problèmes avec le CSS -> à priori Ok -> Vérifier sur un autre ordi !
+- modifier le nom des fichiers -> En anglais !
