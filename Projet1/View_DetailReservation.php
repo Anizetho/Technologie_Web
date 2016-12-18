@@ -1,19 +1,18 @@
 <!-- View_DetailReservation.php --> 
 <!-- Author : Thomas Anizet --> 
-<?php
-session_start();
-?>
+
 <!DOCTYPE html>
+<CENTER>
 <html>
 	<head>
 		<meta charset="utf-8" />
         <title>Suite Réservation</title>
-        <link rel="stylesheet" href="StyleNew.css" />
+        <link rel="stylesheet" href="StyleAll.css" />
 	</head>
 
 	<body>
 		<h1>
-				DETAIL DES RESERVATIONS </br>
+				DETAIL DES RESERVATIONS</br>
 		</h1>
 		
 		<div class="news">
@@ -24,9 +23,9 @@ session_start();
 					<?php
 						for ($i=0; $i < $InfoTravel->GetNb_traveler(); $i++)
 						{
-							$p = $i+1;
-							echo "Passager n°" . $p . " : ";
-						?>	
+							$p = $i+1;?>
+							<?php echo "<div class='under'> 
+							Passager n°" . $p . " : </div>";?>
 							<p> Nom : <input type='text' name='name[]' value='<?php if(isset($InfoTraveler[$p])){echo $InfoTraveler[$p]->GetName();}?>' required /></p>
 							<p> Age : <input type='number' min='1' max='120' name='age[]' value='<?php if(isset($InfoTraveler[$p] )){echo $InfoTraveler[$p]->GetAge();}?>' required /></p>
 						<?php
@@ -47,7 +46,6 @@ session_start();
 			<form method='post' action='Controller.php?page=cancel'>
 				<td align="center"><input type='submit' value='Annuler' name='backcancel' /></td></tr>
 			</form>
-
 		</table>
 		<?php 
 			if(isset($_SESSION['modify'])) 
@@ -57,3 +55,4 @@ session_start();
 		?>
 	</body>
 </html>
+</CENTER>

@@ -1,44 +1,42 @@
 <!-- View_ValidationReservation.php --> 
 <!-- Author : Thomas Anizet --> 
-<?php
-session_start();
-?>
+
 <!DOCTYPE html>
+<CENTER>
 <html>
 	<head>
 		<meta charset="utf-8" />
         <title>Validation</title>
-        <link rel="stylesheet" href="StyleNew.css" />
+        <link rel="stylesheet" href="StyleAll.css" />
 	</head>
 
 	<body>
 		<h1>
-				VALIDATION DES RESERVATIONS </br>
+			VALIDATION DES RESERVATIONS</br>
 		</h1>
 		
 		<div class="news">
 			<?php
 			echo "<table>
-				<tr><td> Destination : </td>
+				<tr><td><B><u> Destination</u> : </B></td>
 				<td> " . $InfoTravel->GetDestination() . "</td></tr>
-				<tr><td> Nombre de places : </td>
+				<tr><td><B><u> Nombre de places</u> : </B></td>
 				<td> " . $InfoTravel->GetNb_traveler() . "</td></tr>";
 
 			for($i=0; $i<$InfoTravel->GetNb_traveler() ; $i++)
 			{
 				$p=$i+1;
-				echo "<tr><td>Passager n°" . $p . " :</tr></td> 
+				echo "<tr><td><B><u>Passager n°" . $p . "</u> :</B></tr></td> 
 				<tr><td> Nom : </td>
 				<td> " . $InfoTraveler[$p]->GetName() . "</td></tr>
 				<tr><td> Age : </td>
 				<td> " . $InfoTraveler[$p]->GetAge() . " ans</td></tr>";
 			}
 				
-			echo"<tr><td> Assurance annulation : </td>
+			echo"<tr><td><B><u> Assurance annulation</u> : </strong></td>
 				<td> " . $InfoTravel->GetInsurance() . "</td></tr></table>";
 			?>
 		</div>
-
 		<table><tr>
 		<?php 
 		if(isset($_SESSION['modify'])) 
@@ -72,3 +70,4 @@ session_start();
 		?>
 	</body>
 </html>
+</CENTER>
