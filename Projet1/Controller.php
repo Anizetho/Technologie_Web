@@ -315,9 +315,5 @@
 - Faire en sorte que le bouton "Confirmer" sur la page de validation n'apparaisse plus quand on modifie une réservation -> Ok
 - Possibilité de revenir en arrière et que la case soit coché ou non selon ce qu'on avait fait avant -> Ok
 - problème d'affichage (présence ligne discontinue) quand on souhaite annuler une réservation (page View_Reservation.php) -> Pas nécessaire de corriger ! -> Ok
-
-- Variables de session -> Régler probmème
-- Age up et ageLow -> Régler problème !  
-
-- Régler les problèmes avec le CSS -> à priori Ok -> Vérifier sur un autre ordi !
-- modifier le nom des fichiers -> En anglais !
+- Régler les problèmes avec le CSS -> à priori Ok -> Vérifier sur un autre ordi ! -> Ok
+- Tout en anglais -> Ok
